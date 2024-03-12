@@ -1,0 +1,434 @@
+-- Creating the database
+CREATE DATABASE IF NOT EXISTS computer_game_DB;
+
+-- Using the newly created database
+USE computer_game_DB;
+
+-- Creating the players table
+CREATE TABLE IF NOT EXISTS players (
+    player_id INT AUTO_INCREMENT PRIMARY KEY,
+    nick VARCHAR(50),
+    registration_date DATE,
+    email VARCHAR(100),
+    premium_account BOOLEAN,
+    banned BOOLEAN
+);
+
+-- Creating the friendships table
+CREATE TABLE IF NOT EXISTS friendships (
+    friendship_id INT AUTO_INCREMENT PRIMARY KEY,
+    player1_id INT,
+    player2_id INT,
+    status VARCHAR(50),
+    FOREIGN KEY (player1_id) REFERENCES players(player_id),
+    FOREIGN KEY (player2_id) REFERENCES players(player_id)
+
+);
+
+-- Creating the achievements_types table
+CREATE TABLE IF NOT EXISTS achievement_types (
+    achievement_type_id INT AUTO_INCREMENT PRIMARY KEY,
+    achievement_name VARCHAR(100),
+    description TEXT
+);
+
+
+-- Creating the character_class table
+CREATE TABLE IF NOT EXISTS character_class (
+    class_id INT AUTO_INCREMENT PRIMARY KEY,
+    class_name VARCHAR(50),
+    skills TEXT,
+    description TEXT
+);
+
+-- Creating the characters table
+CREATE TABLE IF NOT EXISTS characters (
+    character_id INT AUTO_INCREMENT PRIMARY KEY,
+    player_id INT,
+    character_name VARCHAR(50),
+    level INT,
+    class_id INT,
+    stats TEXT,
+    FOREIGN KEY (player_id) REFERENCES players(player_id),
+    FOREIGN KEY (class_id) REFERENCES character_class(class_id)
+    -- inne_informacje TEXT
+);
+
+-- Creating the items table
+CREATE TABLE IF NOT EXISTS items (
+    item_id INT AUTO_INCREMENT PRIMARY KEY,
+    character_id INT,
+    item_name VARCHAR(100),
+    strength INT,
+    intelligence INT,
+    willpower INT,
+    dexterity INT,
+    FOREIGN KEY (character_id) REFERENCES characters(character_id)
+);
+
+-- Creating the player_achievements table
+CREATE TABLE IF NOT EXISTS player_achievements (
+    player_achievement_id INT AUTO_INCREMENT PRIMARY KEY,
+    player_id INT,
+    character_id INT,
+    achievement_type_id INT,
+    date_achieved DATE,
+    FOREIGN KEY (player_id) REFERENCES players(player_id),
+    FOREIGN KEY (character_id) REFERENCES characters(character_id),
+    FOREIGN KEY (achievement_type_id) REFERENCES achievement_types(achievement_type_id)
+);
+
+
+-- Inserting data into the players table with nicknames
+INSERT INTO players (nick, registration_date, email, premium_account, banned) VALUES
+('ShadowSlayer', '2023-01-15', 'player1@example.com', TRUE, FALSE),
+('PixelPirate', '2023-02-20', 'player2@example.com', FALSE, FALSE),
+('CyberNinja', '2023-03-10', 'player3@example.com', TRUE, FALSE),
+('GalacticGamer', '2023-04-05', 'player4@example.com', FALSE, TRUE),
+('TechTornado', '2023-05-08', 'player5@example.com', TRUE, FALSE),
+('NeonKnight', '2023-06-12', 'player6@example.com', FALSE, FALSE),
+('LaserLegend', '2023-07-17', 'player7@example.com', TRUE, FALSE),
+('CodeCrusader', '2023-08-22', 'player8@example.com', FALSE, TRUE),
+('VirtualVoyager', '2023-09-25', 'player9@example.com', TRUE, FALSE),
+('DataDynamo', '2023-10-30', 'player10@example.com', FALSE, FALSE),
+('ConsoleCommando', '2023-11-05', 'player11@example.com', TRUE, FALSE),
+('PixelProwler', '2023-12-10', 'player12@example.com', FALSE, FALSE),
+('ArcadeAvenger', '2024-01-15', 'player13@example.com', TRUE, TRUE),
+('RetroRebel', '2024-02-20', 'player14@example.com', FALSE, FALSE),
+('QuestMaster', '2024-03-25', 'player15@example.com', TRUE, FALSE);
+
+-- Inserting data into the friendships table
+INSERT INTO friendships (player1_id, player2_id, status) VALUES
+(1, 2, 'Active'),
+(1, 3, 'Active'),
+(2, 4, 'Active'),
+(3, 5, 'Pending'),
+(4, 6, 'Active'),
+(5, 7, 'Active'),
+(6, 8, 'Active'),
+(7, 9, 'Pending'),
+(8, 10, 'Active'),
+(9, 10, 'Active');
+
+-- Inserting data into the achievement_types table
+INSERT INTO achievement_types (achievement_name, description) VALUES
+('First Victory', 'Win your first game.'),
+('Socializer', 'Add 10 friends.'),
+('Speed Runner', 'Complete a game in under 10 minutes.'),
+('Master Collector', 'Collect 100 unique items.'),
+('Sharpshooter', 'Score 100 headshots.'),
+('Explorer', 'Visit 50 different locations.'),
+('Team Player', 'Win a game with a team of 4 players.'),
+('Lone Wolf', 'Win a game without any teammates.'),
+('Treasure Hunter', 'Find 50 hidden treasures.'),
+('Veteran', 'Play 100 games.'),
+('Completionist', 'Complete all in-game achievements.'),
+('Legendary', 'Achieve the highest rank in the game.'),
+('Survivor', 'Survive for 30 minutes in a single game.'),
+('Champion', 'Win 10 consecutive games.'),
+('Collector', 'Collect 500 coins.'),
+('Marksman', 'Achieve 90% accuracy in a game.'),
+('Adventurer', 'Complete 100 quests.'),
+('Hero', 'Rescue 10 hostages.'),
+('Medic', 'Revive 20 teammates.'),
+('Top Scorer', 'Be the top scorer in 20 games.'),
+('Trickster', 'Use 50 different special abilities.'),
+('Strategist', 'Win a game without engaging in combat.'),
+('Demolition Expert', 'Destroy 100 structures.'),
+('Craftsman', 'Craft 50 items.'),
+('Craze for the Maze', 'Complete 5 maze challenges.');
+
+-- Inserting data into the character_class table
+INSERT INTO character_class (class_name, skills, description) VALUES
+('Warrior', '{"skill1": "Slash", "skill2": "Shield Bash", "skill3": "War Cry"}', 'The Warrior is a strong melee fighter, specializing in close combat.'),
+('Mage', '{"skill1": "Fireball", "skill2": "Frost Nova", "skill3": "Arcane Missile"}', 'The Mage is a master of arcane magic, capable of unleashing powerful spells.'),
+('Rogue', '{"skill1": "Backstab", "skill2": "Stealth", "skill3": "Poison Strike"}', 'The Rogue is a stealthy assassin, striking from the shadows with deadly precision.'),
+('Hunter', '{"skill1": "Aimed Shot", "skill2": "Trap", "skill3": "Pet Summon"}', 'The Hunter is a skilled tracker and archer, accompanied by a loyal animal companion.'),
+('Druid', '{"skill1": "Shapeshift", "skill2": "Regrowth", "skill3": "Entangling Roots"}', 'The Druid is a versatile shape-shifter, able to harness the power of nature for both offense and defense.');
+
+-- Inserting data into the characters table
+INSERT INTO characters (player_id, character_name, level, class_id, stats) VALUES
+(1, 'Grommash', 10, 1, '{"strength": 20, "agility": 15, "intelligence": 10}'),
+(1, 'Aerith', 8, 2, '{"strength": 10, "agility": 10, "intelligence": 25}'),
+(2, 'Sylvanas', 12, 3, '{"strength": 15, "agility": 20, "intelligence": 10}'),
+(2, 'Thrall', 7, 1, '{"strength": 18, "agility": 12, "intelligence": 15}'),
+(3, 'Arthas', 9, 4, '{"strength": 15, "agility": 20, "intelligence": 10}'),
+(3, 'Jaina', 11, 2, '{"strength": 10, "agility": 10, "intelligence": 20}'),
+(4, 'Malfurion', 10, 5, '{"strength": 15, "agility": 15, "intelligence": 15}'),
+(4, 'Gul\'dan', 8, 2, '{"strength": 15, "agility": 10, "intelligence": 20}'),
+(5, 'Vol\'jin', 11, 4, '{"strength": 10, "agility": 10, "intelligence": 22}'),
+(5, 'Velen', 9, 5, '{"strength": 10, "agility": 15, "intelligence": 20}'),
+(7, 'Anduin', 12, 3, '{"strength": 18, "agility": 20, "intelligence": 12}'),
+(7, 'Kael\'thas', 10, 2, '{"strength": 20, "agility": 22, "intelligence": 10}'),
+(8, 'Saurfang', 9, 1, '{"strength": 12, "agility": 15, "intelligence": 18}'),
+(8, 'Tyrande', 11, 2, '{"strength": 10, "agility": 10, "intelligence": 20}'),
+(9, 'Illidan', 10, 1, '{"strength": 25, "agility": 15, "intelligence": 10}'),
+(9, 'Cairne', 8, 3, '{"strength": 12, "agility": 20, "intelligence": 15}'),
+(10, 'Lady Liadrin', 11, 2, '{"strength": 10, "agility": 10, "intelligence": 20}'),
+(10, 'Turalyon', 9, 4, '{"strength": 12, "agility": 22, "intelligence": 10}'),
+(11, 'Sylvanas', 12, 1, '{"strength": 28, "agility": 18, "intelligence": 8}'),
+(11, 'Tyrande', 9, 4, '{"strength": 12, "agility": 25, "intelligence": 10}'),
+(12, 'Jaina', 11, 2, '{"strength": 10, "agility": 10, "intelligence": 20}'),
+(12, 'Gul\'dan', 10, 2, '{"strength": 10, "agility": 10, "intelligence": 22}'),
+(13, 'Uther', 10, 1, '{"strength": 20, "agility": 15, "intelligence": 10}');
+
+-- Inserting data into the items table
+INSERT INTO items (character_id, item_name, strength, intelligence, willpower, dexterity) VALUES
+(1, 'Sword of Valor', 10, 0, 0, 0),
+(1, 'Shield of the Ancients', 5, 0, 0, 5),
+(2, 'Staff of Wisdom', 0, 10, 0, 0),
+(2, 'Robe of Insight', 0, 5, 10, 0),
+(3, 'Dagger of Shadows', 5, 0, 0, 10),
+(3, 'Cloak of Stealth', 0, 0, 5, 10),
+(4, 'Axe of Fury', 10, 0, 0, 0),
+(4, 'Gauntlets of Strength', 5, 0, 0, 5),
+(5, 'Bow of Precision', 0, 5, 0, 10),
+(5, 'Quiver of Swift Arrows', 0, 0, 5, 10),
+(6, 'Wand of Arcane Power', 0, 10, 0, 0),
+(6, 'Robe of the Archmage', 0, 5, 10, 0),
+(7, 'Staff of the Wilds', 5, 0, 0, 10),
+(7, 'Cloak of Nature', 0, 0, 5, 10),
+(8, 'Scepter of Destruction', 10, 0, 0, 0),
+(8, 'Bracers of Destruction', 5, 0, 0, 5),
+(9, 'Totem of Spirits', 0, 5, 0, 10),
+(9, 'Ancestral Garments', 0, 0, 5, 10),
+(10, 'Book of Light', 0, 10, 0, 0),
+(10, 'Plate of the Divine', 5, 0, 10, 0),
+(11, 'Blade of the Banshee', 10, 0, 0, 0),
+(11, 'Helm of the Forsaken', 5, 0, 0, 5),
+(12, 'Fireball Orb', 0, 10, 0, 0),
+(12, 'Flame Cloak', 0, 5, 10, 0),
+(13, 'Bow of the Hunt', 0, 5, 0, 10),
+(13, 'Cloak of the Hunt', 0, 0, 5, 10),
+(14, 'Frost Staff', 5, 0, 0, 10),
+(14, 'Icy Robe', 0, 0, 5, 10),
+(15, 'Lightbringer', 10, 0, 0, 0),
+(15, 'Plate of the Light', 5, 0, 0, 5),
+(16, 'Moonfire Wand', 0, 10, 0, 0),
+(16, 'Lunar Robe', 0, 5, 10, 0),
+(17, 'Shadowblade', 5, 0, 0, 10),
+(17, 'Shadow Cloak', 0, 0, 5, 10),
+(18, 'Thunder Axe', 10, 0, 0, 0),
+(18, 'Thunder Gauntlets', 5, 0, 0, 5),
+(19, 'Voodoo Totem', 0, 5, 0, 10),
+(19, 'Voodoo Mask', 0, 0, 5, 10),
+(20, 'Vorpal Blade', 10, 0, 0, 0),
+(20, 'Plated Gauntlets', 5, 0, 0, 5);
+
+
+-- Inserting data into the player_achievements table
+INSERT INTO player_achievements (player_id, character_id, achievement_type_id, date_achieved) VALUES
+(1, 1, 1, '2024-01-01'),
+(2, 2, 2, '2024-01-02'),
+(3, 3, 7, '2024-01-03'),
+(4, 4, 4, '2024-01-04'),
+(5, 5, 5, '2024-01-05'),
+(6, 6, 15, '2024-01-06'),
+(7, 7, 2, '2024-01-07'),
+(8, 8, 3, '2024-01-08'),
+(9, 9, 20, '2024-01-09'),
+(10, 10, 5, '2024-01-10'),
+(11, 11, 1, '2024-01-11'),
+(12, 12, 2, '2024-01-12'),
+(13, 13, 3, '2024-01-13'),
+(14, 14, 13, '2024-01-14'),
+(15, 15, 5, '2024-01-15');
+
+
+select *
+from achievement_types;
+
+select *
+from character_class;
+
+select *
+from characters;
+
+select *
+from friendships;
+
+select *
+from items;
+
+select *
+from player_achievements;
+
+select *
+from players;
+
+-- Using any type of the joins create a view that combines multiple tables in a logical way
+-- Sum of item statistics for individual players
+-- Left join allows us to include all players, even if they don't have any items assigned
+SELECT c.character_id, c.character_name, c.level, 
+       SUM(i.strength) AS total_strength,
+       SUM(i.intelligence) AS total_intelligence,
+       SUM(i.willpower) AS total_willpower,
+       SUM(i.dexterity) AS total_dexterity
+FROM characters c
+LEFT JOIN items i ON c.character_id = i.character_id
+GROUP BY c.character_id, c.character_name, c.level;
+
+-- In your database, create a stored function that can be applied to a query in your DB
+-- This function returns average level for all characters
+DELIMITER //
+
+CREATE FUNCTION CalculateAverageLevel() 
+RETURNS DECIMAL(10, 2)
+DETERMINISTIC
+BEGIN
+    DECLARE avg_level DECIMAL(10, 2);
+    
+    SELECT AVG(level) INTO avg_level
+    FROM characters;
+    
+    RETURN avg_level;
+END //
+
+DELIMITER ;
+SELECT CalculateAverageLevel() AS average_level;
+
+-- Prepare an example query with a subquery to demonstrate how to extract data from your DB for analysis
+-- Showing nicks and character names of players with premium account
+SELECT
+	nick, character_name 
+    from players
+JOIN
+    characters ON players.player_id = characters.player_id
+WHERE
+    premium_account = TRUE;
+
+-- In your database, create a stored procedure and demonstrate how it runs
+-- This procedure increases the stats by 1 for all items of a given character (in this case for character_id = 1)
+DELIMITER //
+
+CREATE PROCEDURE IncreaseStats(IN character_id_param INT)
+BEGIN
+    UPDATE items
+    SET 
+        strength = strength + 1,
+        intelligence = intelligence + 1,
+        willpower = willpower + 1,
+        dexterity = dexterity + 1
+    WHERE character_id = character_id_param;
+END //
+
+DELIMITER ;
+
+select*
+from items
+where character_id = 1;
+
+CALL IncreaseStats(1);
+
+select*
+from items
+where character_id = 1;
+
+-- In your database, create a trigger and demonstrate how it runs
+-- For banned players (after changing the field banned to true in the players table),
+-- it will update the stats field in the characters table for string/varchar with the value "banned character, no stats".
+DELIMITER //
+
+CREATE TRIGGER update_character_stats
+AFTER UPDATE ON players
+FOR EACH ROW
+BEGIN
+    IF NEW.banned = TRUE THEN
+        UPDATE characters
+        SET stats = 'banned character, no stats'
+        WHERE player_id = NEW.player_id;
+    END IF;
+END //
+
+DELIMITER ;
+
+-- changes the banned status to true for a player with id 5
+UPDATE players
+SET banned = TRUE
+WHERE player_id = 5;
+
+-- in table characters column stats changes to 'banned character, no stats'
+select player_id, character_id, stats from
+characters
+where player_id = 5;
+
+-- In your database, create an event and demonstrate how it runs
+-- clears achievements every 3 months (e.g. before the start of a new season)
+DELIMITER //
+
+CREATE EVENT clean_player_achievements
+ON SCHEDULE EVERY 3 MONTH
+DO
+BEGIN
+    DELETE FROM player_achievements;
+END;
+//
+
+DELIMITER ;
+
+-- if we want to cancel event
+DROP EVENT IF EXISTS clean_player_achievements;
+
+-- Create a view that uses at least 3-4 base tables; prepare and demonstrate a query that uses the view to produce a logically arranged result set for analysis.
+-- View called player_stats that combines information about players, their characters, and achievements
+    CREATE VIEW player_stats AS
+SELECT
+    p.player_id,
+    p.nick,
+    p.registration_date,
+    p.email,
+    p.premium_account,
+    p.banned,
+    c.character_id,
+    c.character_name,
+    c.level,
+    cc.class_name,
+    a.achievement_name,
+    a.description AS achievement_description
+FROM
+    players p
+JOIN
+    characters c ON p.player_id = c.player_id
+JOIN
+    character_class cc ON c.class_id = cc.class_id
+LEFT JOIN
+    player_achievements pa ON p.player_id = pa.player_id
+LEFT JOIN
+    achievement_types a ON pa.achievement_type_id = a.achievement_type_id;
+    
+-- Show view
+select *
+from player_stats;
+    
+-- Find out the achievements earned by each player along with their character information
+-- result set is logically arranged with each row representing a unique combination of player and character, along with their achievements
+    SELECT
+    nick,
+    character_name,
+    level,
+    class_name,
+    GROUP_CONCAT(achievement_name ORDER BY achievement_name ASC SEPARATOR ', ') AS achievements
+FROM
+    player_stats
+GROUP BY
+    player_id, character_id
+ORDER BY
+    nick, level DESC;
+    
+-- Prepare an example query with group by and having to demonstrate how to extract data from your DB for analysis
+-- calculates the total strength of items collected by each player and filters for players whose total items' strength exceeds 10
+    
+SELECT
+    p.player_id,
+    p.nick,
+    SUM(i.strength) AS total_items_strength
+FROM
+    players p
+JOIN
+    characters c ON p.player_id = c.player_id
+JOIN
+    items i ON c.character_id = i.character_id
+GROUP BY
+    p.player_id, p.nick
+HAVING
+    total_items_strength > 10;
